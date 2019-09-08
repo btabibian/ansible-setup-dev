@@ -91,7 +91,6 @@
 
     - name: Install Node 12
       become_user: "{{ user_name }}"
-      become_method: su
       become: true
       shell: ". /home/{{ user_name }}/.nvm/nvm.sh && nvm install 12"
       args:
@@ -109,17 +108,16 @@
           creates: "/home/{{ user_name }}/.vim/autoload/plug.vim"
 
     # Copy configuration files
+    - name: Install vim plugins
+      become: true
+      become_user: "{{ user_name }}"
+      shell:  "vim +PlugInstall +qall"
 
     - name: Copy vimrc
       copy:
         src: dotfiles/vimrc
         dest: "/home/{{ user_name }}/.vimrc"
         owner: "{{ user_name }}"
-
-    - name: Install vim plugins
-      become: true
-      become_user: "{{ user_name }}"
-      shell:  "vim +PlugInstall +qall"
 
     - name: Copy bashrc
       copy:
