@@ -89,6 +89,11 @@
         warn: false
         creates: "/home/{{ user_name }}/.nvm/nvm.sh"
 
+    - name: Install Ruby
+      package:
+        name: ruby
+        state: present
+
     - name: Install Node 12
       become_user: "{{ user_name }}"
       become: true
