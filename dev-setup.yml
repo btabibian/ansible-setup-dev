@@ -1,10 +1,10 @@
 ---
 - hosts: dev
-  remote_user: root
+  remote_user: ec2-user
   vars:
-      user_name: musicallyut
-      git_user: Utkarsh Upadhyay
-      git_email: musically.ut@gmail.com
+      user_name: btabibian
+      git_user: Behzad Tabibian
+      git_email: me@btabibian.com
 
       sshd: ssh
       sshd_config: /etc/ssh/sshd_config
@@ -57,7 +57,7 @@
         user: "{{ user_name }}"
         key: "{{ item }}"
       with_file:
-        - keys/id_ed25519.pub
+        - keys/id_rsa.pub
       tags:
         - user
 
@@ -172,6 +172,12 @@
       shell:  "vim +PlugInstall +qall"
       tags:
         - dev
+    
+    - name: Copy inputrc
+      copy:
+        src: dotfiles/inputrc
+        dest: "/home/{{ user_name }}/.inputrc"
+        owner: "{{ user_name }}"
 
     - name: Copy vimrc
       copy:
