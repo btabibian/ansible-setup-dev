@@ -1,8 +1,8 @@
 ---
-- hosts: dev
-  remote_user: ec2-user
+- hosts: localhost
+  remote_user: sudo
   vars:
-      user_name: btabibian
+      user_name: behzadtabibian
       git_user: Behzad Tabibian
       git_email: me@btabibian.com
 
@@ -48,7 +48,7 @@
         shell: /bin/bash
         append: yes
         state: present
-        createhome: yes
+        createUsers: yes
       tags:
         - user
 
@@ -113,7 +113,7 @@
       become: true
       become_user: "{{ user_name }}"
       file:
-        path: "/home/{{ user_name }}/.local/z"
+        path: "/Users/{{ user_name }}/.local/z"
         state: directory
       tags:
         - dev
@@ -123,7 +123,7 @@
       become_user: "{{ user_name }}"
       get_url:
         url: https://raw.githubusercontent.com/rupa/z/master/z.sh
-        dest: "/home/{{ user_name }}/.local/z/z.sh"
+        dest: "/Users/{{ user_name }}/.local/z/z.sh"
       tags:
         - dev
 
@@ -134,7 +134,7 @@
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
       args:
         warn: false
-        creates: "/home/{{ user_name }}/.nvm/nvm.sh"
+        creates: "/Users/{{ user_name }}/.nvm/nvm.sh"
       tags:
         - dev
 
@@ -146,9 +146,9 @@
     - name: Install Node 12
       become_user: "{{ user_name }}"
       become: true
-      shell: ". /home/{{ user_name }}/.nvm/nvm.sh && nvm install 12"
+      shell: ". /Users/{{ user_name }}/.nvm/nvm.sh && nvm install 12"
       args:
-          creates: "/home/{{ user_name }}/.nvm/versions/node/v12*"
+          creates: "/Users/{{ user_name }}/.nvm/versions/node/v12*"
           executable: bash
       tags:
         - dev
@@ -158,10 +158,10 @@
     - name: Install vim-plug
       become: true
       become_user: "{{ user_name }}"
-      shell:  "curl -fLo /home/{{ user_name }}/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+      shell:  "curl -fLo /Users/{{ user_name }}/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
       args:
           warn: false
-          creates: "/home/{{ user_name }}/.vim/autoload/plug.vim"
+          creates: "/Users/{{ user_name }}/.vim/autoload/plug.vim"
       tags:
         - dev
 
@@ -172,17 +172,17 @@
       shell:  "vim +PlugInstall +qall"
       tags:
         - dev
-    
+
     - name: Copy inputrc
       copy:
         src: dotfiles/inputrc
-        dest: "/home/{{ user_name }}/.inputrc"
+        dest: "/Users/{{ user_name }}/.inputrc"
         owner: "{{ user_name }}"
 
     - name: Copy vimrc
       copy:
         src: dotfiles/vimrc
-        dest: "/home/{{ user_name }}/.vimrc"
+        dest: "/Users/{{ user_name }}/.vimrc"
         owner: "{{ user_name }}"
       tags:
         - dev
@@ -190,7 +190,7 @@
     - name: Copy bashrc
       copy:
         src: dotfiles/bashrc
-        dest: "/home/{{ user_name }}/.bashrc"
+        dest: "/Users/{{ user_name }}/.bashrc"
         owner: "{{ user_name }}"
       tags:
         - dev
@@ -198,7 +198,7 @@
     - name: Copy tmux.conf
       copy:
         src: dotfiles/tmux.conf
-        dest: "/home/{{ user_name }}/.tmux.conf"
+        dest: "/Users/{{ user_name }}/.tmux.conf"
         owner: "{{ user_name }}"
       tags:
         - dev
@@ -206,7 +206,7 @@
     - name: Copy gitconfig
       copy:
         src: dotfiles/gitconfig
-        dest: "/home/{{ user_name }}/.gitconfig"
+        dest: "/Users/{{ user_name }}/.gitconfig"
         owner: "{{ user_name }}"
       tags:
         - dev
@@ -228,7 +228,7 @@
     - name: Copy gitignore
       copy:
         src: dotfiles/gitignore
-        dest: "/home/{{ user_name }}/.gitignore"
+        dest: "/Users/{{ user_name }}/.gitignore"
         owner: "{{ user_name }}"
       tags:
         - dev
@@ -237,7 +237,7 @@
       become: true
       become_user: "{{ user_name }}"
       file:
-        path: "/home/{{ user_name }}/bin"
+        path: "/Users/{{ user_name }}/bin"
         state: directory
       tags:
         - dev
@@ -245,7 +245,7 @@
     - name: Copy conda.sh
       copy:
         src: dotfiles/conda.sh
-        dest: "/home/{{ user_name }}/bin/conda.sh"
+        dest: "/Users/{{ user_name }}/bin/conda.sh"
         owner: "{{ user_name }}"
       tags:
         - dev
@@ -258,7 +258,7 @@
       become_user: "{{ user_name }}"
       git:
         repo: https://github.com/powerline/fonts.git
-        dest: "/home/{{ user_name }}/powerline-fonts"
+        dest: "/Users/{{ user_name }}/powerline-fonts"
       tags:
         - dev
 
@@ -267,8 +267,8 @@
       become_user: "{{ user_name }}"
       shell: ./install.sh
       args:
-        chdir: "/home/{{ user_name }}/powerline-fonts"
-        creates: "/home/{{ user_name }}/.local/share/fonts/Anonymice Powerline.ttf"
+        chdir: "/Users/{{ user_name }}/powerline-fonts"
+        creates: "/Users/{{ user_name }}/.local/share/fonts/Anonymice Powerline.ttf"
       tags:
         - dev
 
@@ -280,15 +280,15 @@
       become_user: "{{ user_name }}"
       get_url:
         url: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-        dest: "/home/{{ user_name }}/miniconda.sh"
+        dest: "/Users/{{ user_name }}/miniconda.sh"
       tags:
         - dev
 
     - name: Install miniconda
       become: true
       become_user: "{{ user_name }}"
-      shell: "bash /home/{{ user_name }}/miniconda.sh -b -p /home/{{ user_name }}/miniconda3"
+      shell: "bash /Users/{{ user_name }}/miniconda.sh -b -p /Users/{{ user_name }}/miniconda3"
       args:
-          creates: "/home/{{ user_name }}/miniconda3"
+          creates: "/Users/{{ user_name }}/miniconda3"
       tags:
         - dev
